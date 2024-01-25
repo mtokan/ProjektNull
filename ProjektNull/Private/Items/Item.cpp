@@ -2,6 +2,7 @@
 
 #include "Items/Item.h"
 #include "DrawDebugHelpers.h"
+#include "Components/SphereComponent.h"
 #include "ProjektNull/DebugMacros.h"
 
 
@@ -12,19 +13,17 @@ AItem::AItem()
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
 	RootComponent = ItemMesh;
+
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const FString Name = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("%s is alive!"), *Name);
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 20.f, FColor::Red,
-		                                 FString::Printf(TEXT("%s is alive!"), *Name));
-	}
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap);
+	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
 }
 
 float AItem::TransformSin()
@@ -35,6 +34,29 @@ float AItem::TransformSin()
 float AItem::TransformCos()
 {
 	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
+}
+
+void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                            UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep,
+                            const FHitResult& SweepResult)
+{
+	const FString OtherActorName = OtherActor->GetName();
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Blue,
+		                                 FString::Printf(TEXT("%s start overlapping!"), *OtherActorName));
+	}
+}
+
+void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                               UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
+{
+	const FString OtherActorName = OtherActor->GetName();
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red,
+		                                 FString::Printf(TEXT("%s stop overlapping!"), *OtherActorName));
+	}
 }
 
 void AItem::Tick(float DeltaTime)
