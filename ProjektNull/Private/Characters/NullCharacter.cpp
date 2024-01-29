@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Items/Weapons/Weapon.h"
 #include "Pawns/Bird.h"
 
 ANullCharacter::ANullCharacter()
@@ -65,6 +66,15 @@ void ANullCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ANullCharacter::Equip()
+{
+	if(AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
+	{
+		OverlappingWeapon->Equip(GetMesh(),FName("RightHandSocket"));
+		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	}
+}
+
 void ANullCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -79,5 +89,6 @@ void ANullCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &ANullCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANullCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ANullCharacter::Equip);
 	}
 }

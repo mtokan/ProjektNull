@@ -21,9 +21,10 @@ void UNullCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	if(MovementComponent)
+	if (MovementComponent)
 	{
 		GroundSpeed = UKismetMathLibrary::VSizeXY(MovementComponent->Velocity);
 		IsFalling = MovementComponent->IsFalling();
+		CharacterState = NullCharacter->GetCharacterState();
 	}
 }

@@ -2,9 +2,8 @@
 
 #include "Items/Item.h"
 #include "DrawDebugHelpers.h"
+#include "Characters/NullCharacter.h"
 #include "Components/SphereComponent.h"
-#include "ProjektNull/DebugMacros.h"
-
 
 // Sets default values
 AItem::AItem()
@@ -40,22 +39,18 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
                             UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep,
                             const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
+	if (ANullCharacter* NullCharacter = Cast<ANullCharacter>(OtherActor))
 	{
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Blue,
-		                                 FString::Printf(TEXT("%s start overlapping!"), *OtherActorName));
+		NullCharacter->SetOverlappingItem(this);
 	}
 }
 
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
+	if (ANullCharacter* NullCharacter = Cast<ANullCharacter>(OtherActor))
 	{
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red,
-		                                 FString::Printf(TEXT("%s stop overlapping!"), *OtherActorName));
+		NullCharacter->SetOverlappingItem(nullptr);
 	}
 }
 

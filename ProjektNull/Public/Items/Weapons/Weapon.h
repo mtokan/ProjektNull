@@ -13,6 +13,8 @@ UCLASS()
 class PROJEKTNULL_API AWeapon : public AItem
 {
 	GENERATED_BODY()
+public:
+	void Equip(USceneComponent* InParent, FName InSocketName);
 protected:
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 						 UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep,
