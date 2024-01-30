@@ -13,6 +13,7 @@ class UInputAction;
 class UCameraComponent;
 class USpringArmComponent;
 class AItem;
+class AWeapon;
 
 UCLASS()
 class PROJEKTNULL_API ANullCharacter : public ACharacter
@@ -35,10 +36,20 @@ protected:
 	void Attack();
 
 	void PlayAttackMontage();
+	void PlayEquipMontage(FName SectionName);
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 
+	UFUNCTION(BlueprintCallable)
+	void Holster();
+
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputMappingContext* NullCharacterMappingContext;
 
@@ -72,6 +83,12 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
+
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 };
